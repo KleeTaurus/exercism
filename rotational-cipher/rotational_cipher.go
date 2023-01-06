@@ -1,27 +1,18 @@
 package rotationalcipher
 
-var (
-	alphabetLower = []byte("abcdefghijklmnopqrstuvwxyz")
-	alphabetUpper = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-	alphabetMap = make(map[byte]int)
+const (
+	upperOffset = 65
+	lowerOffset = 97
 )
-
-func init() {
-	for i := 0; i < 26; i++ {
-		alphabetMap[alphabetLower[i]] = i
-		alphabetMap[alphabetUpper[i]] = i
-	}
-}
 
 func RotationalCipher(plain string, shiftKey int) string {
 	cipher := []byte{}
 	for _, c := range []byte(plain) {
 		switch {
 		case c >= 'a' && c <= 'z':
-			cipher = append(cipher, alphabetLower[shift(c, shiftKey)])
+			cipher = append(cipher, shift(c, lowerOffset, shiftKey))
 		case c >= 'A' && c <= 'Z':
-			cipher = append(cipher, alphabetUpper[shift(c, shiftKey)])
+			cipher = append(cipher, shift(c, upperOffset, shiftKey))
 		default:
 			cipher = append(cipher, c)
 		}
@@ -30,7 +21,6 @@ func RotationalCipher(plain string, shiftKey int) string {
 	return string(cipher)
 }
 
-func shift(c byte, shiftKey int) int {
-	idx := alphabetMap[c]
-	return (idx + shiftKey) % 26
+func shift(c byte, offset int, shiftKey int) byte {
+	return byte((int(c)-offset+shiftKey)%26 + offset)
 }
