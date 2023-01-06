@@ -1,14 +1,8 @@
 package atbash
 
-var cipher = []byte("abcdefghijklmnopqrstuvwxyz")
-var cipherMap map[byte]int
-
-func init() {
-	cipherMap = make(map[byte]int)
-	for idx, c := range cipher {
-		cipherMap[c] = idx
-	}
-}
+const (
+	offset = 97
+)
 
 func Atbash(s string) string {
 	cleaned := []byte{}
@@ -36,7 +30,7 @@ func Atbash(s string) string {
 
 func encode(c byte) byte {
 	if c >= 'a' && c <= 'z' {
-		return cipher[25-cipherMap[c]]
+		return byte(25 - (int(c) - offset) + offset)
 	}
 	return c
 }
