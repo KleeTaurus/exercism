@@ -3,17 +3,12 @@ package wordsearch
 import "errors"
 
 func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
-	puzzleTable := make([][]byte, len(puzzle))
-	for i, line := range puzzle {
-		puzzleTable[i] = []byte(line)
-	}
-
 	result := make(map[string][2][2]int)
 	for _, word := range words {
-		for i := 0; i < len(puzzleTable); i++ {
-			for j := 0; j < len(puzzleTable[i]); j++ {
-				if puzzleTable[i][j] == word[0] {
-					matched, x, y := ifWordMatched(word, puzzleTable, i, j)
+		for i := 0; i < len(puzzle); i++ {
+			for j := 0; j < len(puzzle[i]); j++ {
+				if puzzle[i][j] == word[0] {
+					matched, x, y := ifWordMatched(word, puzzle, i, j)
 					if matched {
 						result[word] = [2][2]int{{j, i}, {y, x}}
 					}
@@ -25,16 +20,17 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	if len(result) != len(words) {
 		return nil, errors.New("Not all words were founded")
 	}
+
 	return result, nil
 }
 
-func ifWordMatched(word string, puzzleTable [][]byte, i, j int) (bool, int, int) {
+func ifWordMatched(word string, puzzle []string, i, j int) (bool, int, int) {
 	// find for 8 directions
 	wordLen := len(word)
-	if j+wordLen <= len(puzzleTable[i]) {
+	if j+wordLen <= len(puzzle[i]) {
 		bw := make([]byte, wordLen)
 		for x := 0; x < wordLen; x++ {
-			bw[x] = puzzleTable[i][j+x]
+			bw[x] = puzzle[i][j+x]
 		}
 		if string(bw) == word {
 			return true, i, j + wordLen - 1
@@ -43,16 +39,16 @@ func ifWordMatched(word string, puzzleTable [][]byte, i, j int) (bool, int, int)
 	if j-wordLen+1 >= 0 {
 		bw := make([]byte, wordLen)
 		for x := 0; x < wordLen; x++ {
-			bw[x] = puzzleTable[i][j-x]
+			bw[x] = puzzle[i][j-x]
 		}
 		if string(bw) == word {
 			return true, i, j - wordLen + 1
 		}
 	}
-	if i+wordLen <= len(puzzleTable) {
+	if i+wordLen <= len(puzzle) {
 		bw := make([]byte, wordLen)
 		for x := 0; x < wordLen; x++ {
-			bw[x] = puzzleTable[i+x][j]
+			bw[x] = puzzle[i+x][j]
 		}
 		if string(bw) == word {
 			return true, i + wordLen - 1, j
@@ -61,16 +57,16 @@ func ifWordMatched(word string, puzzleTable [][]byte, i, j int) (bool, int, int)
 	if i-wordLen+1 >= 0 {
 		bw := make([]byte, wordLen)
 		for x := 0; x < wordLen; x++ {
-			bw[x] = puzzleTable[i-x][j]
+			bw[x] = puzzle[i-x][j]
 		}
 		if string(bw) == word {
 			return true, i - wordLen + 1, j
 		}
 	}
-	if j+wordLen <= len(puzzleTable[i]) && i+wordLen <= len(puzzleTable) {
+	if j+wordLen <= len(puzzle[i]) && i+wordLen <= len(puzzle) {
 		bw := make([]byte, wordLen)
 		for x := 0; x < wordLen; x++ {
-			bw[x] = puzzleTable[i+x][j+x]
+			bw[x] = puzzle[i+x][j+x]
 		}
 		if string(bw) == word {
 			return true, i + wordLen - 1, j + wordLen - 1
@@ -79,29 +75,29 @@ func ifWordMatched(word string, puzzleTable [][]byte, i, j int) (bool, int, int)
 	if j-wordLen+1 >= 0 && i-wordLen+1 >= 0 {
 		bw := make([]byte, wordLen)
 		for x := 0; x < wordLen; x++ {
-			bw[x] = puzzleTable[i-x][j-x]
+			bw[x] = puzzle[i-x][j-x]
 		}
 		if string(bw) == word {
 			return true, i - wordLen + 1, j - wordLen + 1
 		}
 	}
-	if j+wordLen <= len(puzzleTable[i]) && i-wordLen+1 >= 0 {
+	if j+wordLen <= len(puzzle[i]) && i-wordLen+1 >= 0 {
 		bw := make([]byte, wordLen)
 		for x := 0; x < wordLen; x++ {
-			bw[x] = puzzleTable[i-x][j+x]
+			bw[x] = puzzle[i-x][j+x]
 		}
 		if string(bw) == word {
 			return true, i - wordLen + 1, j + wordLen - 1
 		}
 	}
-	if j-wordLen+1 >= 0 && i+wordLen <= len(puzzleTable) {
+	if j-wordLen+1 >= 0 && i+wordLen <= len(puzzle) {
 		bw := make([]byte, wordLen)
 		for x := 0; x < wordLen; x++ {
-			bw[x] = puzzleTable[i+x][j-x]
+			bw[x] = puzzle[i+x][j-x]
 		}
 		if string(bw) == word {
 			return true, i + wordLen - 1, j - wordLen + 1
 		}
 	}
-	return false, 0, 0
+	return false, -1, -1
 }
