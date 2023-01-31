@@ -33,7 +33,7 @@ func Allergies(allergies uint) []string {
 				items = append(items, item)
 			}
 		}
-		num /= 2
+		num = num >> 1
 	}
 	return items
 }
@@ -50,7 +50,7 @@ func AllergicTo(allergies uint, allergen string) bool {
 func getMaxRange(allergies uint) uint {
 	var i uint = 1
 	for i < allergies {
-		i = i * 2
+		i = i << 1
 	}
 	return i
 }
